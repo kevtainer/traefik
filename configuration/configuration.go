@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"fmt"
+	"github.com/containous/traefik/middlewares/tracing/instana"
 	"strings"
 	"time"
 
@@ -349,6 +350,10 @@ func (gc *GlobalConfiguration) initTracing() {
 				log.Warn("DataDog configuration will be ignored")
 				gc.Tracing.DataDog = nil
 			}
+			if gc.Tracing.Instana != nil {
+				log.Warn("Instana configuration will be ignored")
+				gc.Tracing.Instana = nil
+			}
 		case zipkin.Name:
 			if gc.Tracing.Zipkin == nil {
 				gc.Tracing.Zipkin = &zipkin.Config{
@@ -366,6 +371,10 @@ func (gc *GlobalConfiguration) initTracing() {
 				log.Warn("DataDog configuration will be ignored")
 				gc.Tracing.DataDog = nil
 			}
+			if gc.Tracing.Instana != nil {
+				log.Warn("Instana configuration will be ignored")
+				gc.Tracing.Instana = nil
+			}
 		case datadog.Name:
 			if gc.Tracing.DataDog == nil {
 				gc.Tracing.DataDog = &datadog.Config{
@@ -382,6 +391,30 @@ func (gc *GlobalConfiguration) initTracing() {
 			if gc.Tracing.Jaeger != nil {
 				log.Warn("Jaeger configuration will be ignored")
 				gc.Tracing.Jaeger = nil
+			}
+			if gc.Tracing.Instana != nil {
+				log.Warn("Instana configuration will be ignored")
+				gc.Tracing.Instana = nil
+			}
+		case instana.Name:
+			if gc.Tracing.Instana == nil {
+				gc.Tracing.Instana = &instana.Config{
+					LocalAgentHost: "localhost",
+					LocalAgentPort: 42699,
+					LogLevel:       "info",
+				}
+			}
+			if gc.Tracing.Zipkin != nil {
+				log.Warn("Zipkin configuration will be ignored")
+				gc.Tracing.Zipkin = nil
+			}
+			if gc.Tracing.Jaeger != nil {
+				log.Warn("Jaeger configuration will be ignored")
+				gc.Tracing.Jaeger = nil
+			}
+			if gc.Tracing.DataDog != nil {
+				log.Warn("DataDog configuration will be ignored")
+				gc.Tracing.DataDog = nil
 			}
 		default:
 			log.Warnf("Unknown tracer %q", gc.Tracing.Backend)

@@ -819,6 +819,12 @@
   version = "v1.3.7"
 
 [[projects]]
+  name = "github.com/instana/go-sensor"
+  packages = ["."]
+  revision = "493edb42228321483dd4d59ade71ca93fa89d66b"
+  version = "1.4.12"
+
+[[projects]]
   branch = "master"
   name = "github.com/jjcollinge/logrus-appinsights"
   packages = ["."]
@@ -901,6 +907,12 @@
   packages = ["."]
   revision = "d0d31d8ca62fa3f7e4526ca0ce95de81e4ed001e"
   version = "v0.5.1"
+
+[[projects]]
+  name = "github.com/looplab/fsm"
+  packages = ["."]
+  revision = "84b5307469f859464403f80919467950a79de1b1"
+  version = "v0.1.0"
 
 [[projects]]
   name = "github.com/mailgun/minheap"
@@ -1055,6 +1067,15 @@
   name = "github.com/opentracing-contrib/go-observer"
   packages = ["."]
   revision = "a52f2342449246d5bcc273e65cbdcfa5f7d6c63c"
+
+[[projects]]
+  name = "github.com/opentracing/basictracer-go"
+  packages = [
+    ".",
+    "wire"
+  ]
+  revision = "1b32af207119a14b1b231d451df3ed04a72efebf"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/opentracing/opentracing-go"
@@ -1880,6 +1901,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "781857167b93ec784d40c7c093a46c4d817f2d47b0dbc1f08fe3ec8ffc562cf9"
+  inputs-digest = "5546db2a9f685611e20b09f4613c520db278bcaf22af3fe8621cd1b2b954c93c"
   solver-name = "gps-cdcl"
   solver-version = 1
