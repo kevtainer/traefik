@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/containous/traefik/tracing/instana"
 	"time"
 
 	"github.com/containous/flaeg/parse"
@@ -111,6 +112,11 @@ func NewTraefikDefaultPointersConfiguration() *TraefikConfiguration {
 			GlobalTag:          "",
 			Debug:              false,
 			PrioritySampling:   false,
+		},
+		Instana: &instana.Config{
+			LocalAgentHost: "localhost",
+			LocalAgentPort: 42699,
+			LogLevel:       "info",
 		},
 	}
 

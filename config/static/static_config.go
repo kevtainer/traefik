@@ -2,6 +2,7 @@ package static
 
 import (
 	"errors"
+	"github.com/containous/traefik/tracing/instana"
 	"strings"
 	"time"
 
@@ -116,12 +117,13 @@ type LifeCycle struct {
 
 // Tracing holds the tracing configuration.
 type Tracing struct {
-	Backend       string          `description:"Selects the tracking backend ('jaeger','zipkin', 'datadog')." export:"true"`
+	Backend       string          `description:"Selects the tracking backend ('jaeger','zipkin','datadog','instana')." export:"true"`
 	ServiceName   string          `description:"Set the name for this service" export:"true"`
 	SpanNameLimit int             `description:"Set the maximum character limit for Span names (default 0 = no limit)" export:"true"`
 	Jaeger        *jaeger.Config  `description:"Settings for jaeger"`
 	Zipkin        *zipkin.Config  `description:"Settings for zipkin"`
 	DataDog       *datadog.Config `description:"Settings for DataDog"`
+	Instana       *instana.Config `description:"Settings for Instana"`
 }
 
 // Providers contains providers configuration
@@ -242,6 +244,10 @@ func (c *Configuration) initTracing() {
 				log.Warn("DataDog configuration will be ignored")
 				c.Tracing.DataDog = nil
 			}
+			if c.Tracing.Instana != nil {
+				log.Warn("Instana configuration will be ignored")
+				c.Tracing.Instana = nil
+			}
 		case zipkin.Name:
 			if c.Tracing.Zipkin == nil {
 				c.Tracing.Zipkin = &zipkin.Config{
@@ -260,6 +266,10 @@ func (c *Configuration) initTracing() {
 				log.Warn("DataDog configuration will be ignored")
 				c.Tracing.DataDog = nil
 			}
+			if c.Tracing.Instana != nil {
+				log.Warn("Instana configuration will be ignored")
+				c.Tracing.Instana = nil
+			}
 		case datadog.Name:
 			if c.Tracing.DataDog == nil {
 				c.Tracing.DataDog = &datadog.Config{
@@ -275,6 +285,30 @@ func (c *Configuration) initTracing() {
 			if c.Tracing.Jaeger != nil {
 				log.Warn("Jaeger configuration will be ignored")
 				c.Tracing.Jaeger = nil
+			}
+			if c.Tracing.Instana != nil {
+				log.Warn("Instana configuration will be ignored")
+				c.Tracing.Instana = nil
+			}
+		case instana.Name:
+			if c.Tracing.Instana == nil {
+				c.Tracing.Instana = &instana.Config{
+					LocalAgentHost: "localhost",
+					LocalAgentPort: 42699,
+					LogLevel:       "info",
+				}
+			}
+			if c.Tracing.Zipkin != nil {
+				log.Warn("Zipkin configuration will be ignored")
+				c.Tracing.Zipkin = nil
+			}
+			if c.Tracing.Jaeger != nil {
+				log.Warn("Jaeger configuration will be ignored")
+				c.Tracing.Jaeger = nil
+			}
+			if c.Tracing.DataDog != nil {
+				log.Warn("DataDog configuration will be ignored")
+				c.Tracing.DataDog = nil
 			}
 		default:
 			log.Warnf("Unknown tracer %q", c.Tracing.Backend)

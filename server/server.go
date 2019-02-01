@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"github.com/containous/traefik/tracing/instana"
 	"net/http"
 	"os"
 	"os/signal"
@@ -60,6 +61,8 @@ func setupTracing(conf *static.Tracing) tracing.TrackingBackend {
 		return conf.Zipkin
 	case datadog.Name:
 		return conf.DataDog
+	case instana.Name:
+		return conf.Instana
 	default:
 		log.WithoutContext().Warnf("Could not initialize tracing: unknown tracer %q", conf.Backend)
 		return nil
