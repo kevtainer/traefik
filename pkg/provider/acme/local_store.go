@@ -111,6 +111,29 @@ func (s *LocalStore) listenSaveAction() {
 	})
 }
 
+// GetForceRenew
+func (s *LocalStore) GetForceRenew(resolverName string) (bool, error) {
+	storedData, err := s.get(resolverName)
+	if err != nil {
+		return false, err
+	}
+
+	return storedData.ForceRenew, nil
+}
+
+// SaveForceRenew
+func (s *LocalStore) SaveForceRenew(resolverName string, value bool) error {
+	storedData, err := s.get(resolverName)
+	if err != nil {
+		return err
+	}
+
+	storedData.ForceRenew = value
+	s.save(resolverName, storedData)
+
+	return nil
+}
+
 // GetAccount returns ACME Account.
 func (s *LocalStore) GetAccount(resolverName string) (*Account, error) {
 	storedData, err := s.get(resolverName)

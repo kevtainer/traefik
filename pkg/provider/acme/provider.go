@@ -167,6 +167,7 @@ func isAccountMatchingCaServer(ctx context.Context, accountURI string, serverURI
 // using the given Configuration channel.
 func (p *Provider) Provide(configurationChan chan<- dynamic.Message, pool *safe.Pool) error {
 	ctx := log.With(context.Background(), log.Str(log.ProviderName, p.ResolverName+".acme"))
+	logger := log.FromContext(ctx)
 
 	p.pool = pool
 
@@ -178,6 +179,7 @@ func (p *Provider) Provide(configurationChan chan<- dynamic.Message, pool *safe.
 
 	p.renewCertificates(ctx)
 
+	logger.Info("initialized renewCertificates")
 	ticker := time.NewTicker(24 * time.Hour)
 	pool.GoCtx(func(ctxPool context.Context) {
 		for {
@@ -622,11 +624,22 @@ func (p *Provider) renewCertificates(ctx context.Context) {
 	logger := log.FromContext(ctx)
 
 	logger.Info("Testing certificate renew...")
+
+	forceRenew, _ := p.Store.GetForceRenew(p.ResolverName)
+	if forceRenew {
+		logger.Info("ForceRenew set, toggling to false...")
+		// toggle the ForceRenew flag so we don't blow up acme
+		err := p.Store.SaveForceRenew(p.ResolverName, false)
+		if err != nil {
+			logger.Error("Unable to set ForceRenew to false...")
+		}
+	}
+
 	for _, cert := range p.certificates {
 		crt, err := getX509Certificate(ctx, &cert.Certificate)
 		// If there's an error, we assume the cert is broken, and needs update
 		// <= 30 days left, renew certificate
-		if err != nil || crt == nil || crt.NotAfter.Before(time.Now().Add(24*30*time.Hour)) {
+		if err != nil || crt == nil || forceRenew == true || crt.NotAfter.Before(time.Now().Add(24*30*time.Hour)) {
 			client, err := p.getClient()
 			if err != nil {
 				logger.Infof("Error renewing certificate from LE : %+v, %v", cert.Domain, err)
