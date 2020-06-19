@@ -130,6 +130,14 @@ tls:
 
 If no default certificate is provided, Traefik generates and uses a self-signed certificate.
 
+### Intermediate Certificate Chains
+
+Certain clients and browsers may not have the issuing authorities intermediate certificate distributed with their software. In this case, the issuing authority will typically provide a chain certificate bundle which can be concatenated onto your signed server certificate. The server certificate issued by your issuing authority must be present before the chained authority certificate bundle in a combined file:
+
+```bash tab="CLI"
+cat server.crt intermediate-bundle.crt > server.chained.crt
+```
+
 ## TLS Options
 
 The TLS options allow one to configure some parameters of the TLS connection.
